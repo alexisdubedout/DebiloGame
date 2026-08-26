@@ -74,6 +74,52 @@
   .kbdHint b{ color:var(--rune-glow); }
 
   .overlay{ position:fixed; inset:0; background:rgba(6,4,10,.88); backdrop-filter:blur(2px); z-index:20; display:flex; align-items:center; justify-content:center; padding:20px; }
+  .overlay.menu{ background:rgba(6,4,10,.28); backdrop-filter:blur(0.5px); flex-direction:column; justify-content:space-between; padding:0; }
+
+  .menuTopBar{ width:100%; display:flex; justify-content:space-between; align-items:flex-start; padding:18px clamp(16px,3vw,34px); flex-shrink:0; }
+  .menuUser{ display:flex; align-items:center; gap:10px; background:rgba(10,7,16,.55); border:1px solid var(--border); border-radius:30px; padding:6px 16px 6px 6px; backdrop-filter:blur(6px); }
+  .menuAvatar{ width:30px; height:30px; border-radius:50%; background:radial-gradient(circle at 35% 30%, var(--rune-glow), var(--rune) 70%); display:flex; align-items:center; justify-content:center; font-size:14px; box-shadow:0 0 10px rgba(156,140,255,.5); flex-shrink:0; }
+  .menuUserInfo{ display:flex; flex-direction:column; }
+  .pseudoInlineInput{ background:none; border:none; color:var(--text); font-family:var(--font-mono); font-size:12.5px; font-weight:700; padding:0; width:120px; }
+  .pseudoInlineInput:focus{ outline:none; }
+  .menuBestLine{ font-family:var(--font-mono); font-size:10px; color:var(--gold); }
+  .pillBtn{ background:rgba(10,7,16,.55); border:1px solid var(--border); border-radius:30px; padding:9px 18px; color:var(--text); font-family:var(--font-mono); font-size:11.5px; letter-spacing:.04em; cursor:pointer; backdrop-filter:blur(6px); transition:.15s; }
+  .pillBtn:hover{ border-color:var(--rune-glow); background:rgba(108,92,231,.18); }
+
+  .menuHero{ position:relative; display:flex; flex-direction:column; align-items:center; flex-shrink:0; }
+  .heroRing{ position:absolute; top:50%; left:50%; width:clamp(220px,32vw,380px); height:clamp(220px,32vw,380px); transform:translate(-50%,-50%); border-radius:50%; pointer-events:none; }
+  .heroRing::before, .heroRing::after{ content:''; position:absolute; inset:0; border-radius:50%; border:1px solid transparent; }
+  .heroRing::before{ border-top-color:rgba(156,140,255,.55); border-bottom-color:rgba(156,140,255,.2); animation:heroSpin 18s linear infinite; }
+  .heroRing::after{ inset:22px; border-left-color:rgba(255,209,102,.4); border-right-color:rgba(255,209,102,.15); animation:heroSpin 26s linear infinite reverse; }
+  @keyframes heroSpin{ to{ transform:rotate(360deg); } }
+  @keyframes heroGlow{ 0%,100%{ text-shadow:0 0 22px rgba(156,140,255,.4), 0 0 60px rgba(108,92,231,.25); } 50%{ text-shadow:0 0 34px rgba(156,140,255,.65), 0 0 90px rgba(108,92,231,.4); } }
+  .heroTitle{ position:relative; z-index:1; font-family:var(--font-deco); font-size:clamp(34px,6.5vw,64px); line-height:1.05; text-align:center; color:var(--rune-glow); letter-spacing:.02em; margin:0; animation:heroGlow 4s ease-in-out infinite; }
+  .heroSub{ position:relative; z-index:1; font-family:var(--font-mono); font-size:clamp(10px,1vw,13px); letter-spacing:.32em; text-transform:uppercase; color:var(--text-dim); margin-top:10px; }
+
+  .menuCenter{ flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:26px; padding:0 20px; min-height:0; }
+  .portalCta{ position:relative; overflow:hidden; padding:15px 46px; border-radius:40px; border:1px solid rgba(255,209,102,.5); background:linear-gradient(155deg, var(--rune-glow), var(--rune)); color:#0A0710; font-family:var(--font-mono); font-weight:700; letter-spacing:.06em; font-size:clamp(13px,1.1vw,16px); cursor:pointer; box-shadow:0 8px 26px rgba(108,92,231,.45), 0 0 40px rgba(156,140,255,.25); animation:cardGlow 4s ease-in-out infinite; }
+  .portalCta::after{ content:''; position:absolute; top:0; left:-60%; width:35%; height:100%; background:linear-gradient(120deg, transparent, rgba(255,255,255,.45), transparent); transform:skewX(-20deg); transition:left .55s ease; }
+  .portalCta:hover::after{ left:140%; }
+
+  .menuBottom{ width:100%; display:flex; flex-direction:column; align-items:center; gap:10px; padding:0 16px 22px; flex-shrink:0; }
+  .floatToggles{ display:flex; gap:10px; }
+  .floatPanel{ width:min(92vw,420px); max-height:38vh; overflow-y:auto; background:rgba(10,7,16,.7); border:1px solid var(--border); border-radius:12px; padding:14px 16px; backdrop-filter:blur(8px); box-shadow:0 12px 30px rgba(0,0,0,.4); animation:overlayIn .25s ease; }
+  .floatPanel .rules{ margin-bottom:0; background:none; border:none; padding:0; text-align:left; font-size:12px; color:var(--text-dim); line-height:1.7; }
+  .floatPanel .rules b{ color:var(--rune-glow); }
+  .floatPanel .lbTitle{ margin-bottom:8px; }
+
+  @media (prefers-reduced-motion: reduce){ .heroRing::before, .heroRing::after{ animation:none; } .heroTitle{ animation:none; } .portalCta{ animation:none; } .portalCta::after{ display:none; } }
+
+  @keyframes levelUpPop{ 0%{ transform:scale(.4) rotate(-4deg); opacity:0; } 60%{ transform:scale(1.08) rotate(1deg); opacity:1; } 100%{ transform:scale(1) rotate(0); opacity:1; } }
+  .levelUpBanner{ font-family:var(--font-mono); font-size:clamp(11px,1vw,13px); font-weight:700; letter-spacing:.3em; color:var(--gold); background:linear-gradient(90deg, transparent, rgba(255,209,102,.16), transparent); border-top:1px solid rgba(255,209,102,.35); border-bottom:1px solid rgba(255,209,102,.35); padding:6px 0; margin-bottom:14px; animation:levelUpPop .5s cubic-bezier(.2,1.4,.4,1); }
+  @keyframes runeCardIn{ from{ opacity:0; transform:translateY(14px) scale(.92); } to{ opacity:1; transform:translateY(0) scale(1); } }
+  .runeCard{ animation:runeCardIn .4s cubic-bezier(.2,1,.3,1) backwards; }
+  .runeCard:nth-child(1){ animation-delay:.05s; }
+  .runeCard:nth-child(2){ animation-delay:.14s; }
+  .runeCard:nth-child(3){ animation-delay:.23s; }
+  @keyframes flashBurst{ from{ opacity:.9; } to{ opacity:0; } }
+  .flashBurst{ position:fixed; inset:0; z-index:19; pointer-events:none; background:radial-gradient(circle at 50% 45%, rgba(255,225,150,.55), rgba(156,140,255,.18) 45%, transparent 70%); animation:flashBurst .5s ease-out forwards; }
+  @media (prefers-reduced-motion: reduce){ .levelUpBanner, .runeCard, .flashBurst{ animation:none; } }
   @keyframes overlayIn{ from{ opacity:0; transform:scale(.96) translateY(6px); } to{ opacity:1; transform:scale(1) translateY(0); } }
   @keyframes cardGlow{ 0%,100%{ box-shadow:0 20px 60px rgba(0,0,0,.55), 0 0 0 1px rgba(156,140,255,.06), 0 0 30px rgba(108,92,231,.18); } 50%{ box-shadow:0 20px 60px rgba(0,0,0,.55), 0 0 0 1px rgba(156,140,255,.10), 0 0 46px rgba(156,140,255,.32); } }
   .cardBox{
@@ -132,13 +178,18 @@
   .lbRow span:first-child{ overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
   .lbRow.me{ background:rgba(255,209,102,.14); color:var(--gold); }
 
-  .adRail{ position:fixed; top:50%; transform:translateY(-50%); width:160px; min-height:300px; display:none; align-items:center; justify-content:center; text-align:center; font-family:var(--font-mono); font-size:10px; color:var(--text-dim); border:1px dashed var(--border); border-radius:8px; background:rgba(255,255,255,.02); padding:10px; z-index:1; overflow:hidden; }
+  .adRail{ position:fixed; top:50%; transform:translateY(-50%); width:160px; min-height:300px; display:none; align-items:center; justify-content:center; text-align:center; font-family:var(--font-mono); font-size:10px; color:var(--text-dim); border:1px solid var(--border); border-radius:8px; background:rgba(255,255,255,.02); padding:0; z-index:1; overflow:hidden; box-shadow:0 8px 24px rgba(0,0,0,.4); }
+  .adRail img{ width:100%; height:100%; object-fit:cover; display:block; }
   .adRail.left{ left:18px; }
   .adRail.right{ right:18px; }
   @media (min-width:1360px){ .adRail{ display:flex; } }
+
+  #bgCanvas{ position:fixed; inset:0; width:100vw; height:100vh; z-index:0; pointer-events:none; }
+  .app{ position:relative; z-index:1; }
 </style>
 </head>
 <body>
+<canvas id="bgCanvas"></canvas>
 <!--
   Emplacements pub : remplacer le contenu de #adLeft / #adRight par le bloc
   fourni par votre régie (ex. Google AdSense) :
@@ -148,11 +199,11 @@
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXX" crossorigin="anonymous"></script>
   Ces rails ne s'affichent qu'à partir de 1360px de large pour ne jamais gêner le jeu.
 -->
-<div class="adRail left" id="adLeft">Espace pub</div>
-<div class="adRail right" id="adRight">Espace pub</div>
+<div class="adRail left" id="adLeft"><img src="ads/rencontres-chaudes.jpg" alt="Publicité"></div>
+<div class="adRail right" id="adRight"><img src="ads/booste-sport.jpg" alt="Publicité"></div>
 
 <div class="app">
-  <header>
+  <header id="gameHeader" style="display:none;">
     <div class="title">L'Épreuve du Cercle <small>rogue-arcade — heroic fantasy</small></div>
     <div class="best">Meilleur score<br><span id="bestVal">0</span></div>
   </header>
@@ -182,25 +233,46 @@
   <div class="kbdHint">Déplacement : <b>flèches / WASD</b> · Esquive éclair : <b>espace</b></div>
 </div>
 
-<div class="overlay" id="startOverlay">
-  <div class="cardBox"><div class="cardScroll">
-    <h1>L'Épreuve du Cercle</h1>
-    <div class="titleRule"><span>✦</span></div>
-    <p>Un cercle runique, un flot ininterrompu de dangers, et vous. Survivez le plus longtemps possible — le score grimpe de lui-même, mais ce sont les esquives au ras du danger qui le font exploser.</p>
-    <div class="rules">
-      <div><b>Déplacement</b> — flèches / WASD, ou joystick tactile.</div>
-      <div><b>Esquive éclair (dash)</b> — espace ou bouton DASH. Brève invincibilité, recharge ~1,4s.</div>
-      <div><b>Frôler</b> un danger sans le toucher = <b>bonus + combo</b>. Plus vous jouez près du danger, plus le score s'envole.</div>
-      <div><b>3 cœurs</b>. De nouveaux périls apparaissent plus vous survivez.</div>
-      <div><b>Runes</b> — tous les 180 points, choisissez un bonus permanent parmi 3 propositions.</div>
+<div class="overlay menu" id="startOverlay">
+  <div class="menuTopBar">
+    <div class="menuUser">
+      <div class="menuAvatar">🜁</div>
+      <div class="menuUserInfo">
+        <input class="pseudoInlineInput" id="pseudoInput" type="text" maxlength="16" placeholder="Votre pseudo" />
+        <div class="menuBestLine">🏆 <span id="bestValMenu">0</span> pts</div>
+      </div>
     </div>
-    <input class="pseudoInput" id="pseudoInput" type="text" maxlength="16" placeholder="Votre pseudo (classement)" />
-    <button class="primaryBtn" id="startBtn">Entrer dans le Cercle</button>
-    <div class="lbBox">
+    <button class="pillBtn" id="lbToggleBtn">🏆 Classement</button>
+  </div>
+
+  <div class="menuCenter">
+    <div class="menuHero">
+      <div class="heroRing"></div>
+      <h1 class="heroTitle">L'Épreuve<br>du Cercle</h1>
+      <div class="heroSub">rogue-arcade · heroic fantasy</div>
+    </div>
+    <button class="portalCta" id="startBtn">Entrer dans le Cercle</button>
+  </div>
+
+  <div class="menuBottom">
+    <div class="floatToggles">
+      <button class="pillBtn" id="rulesToggleBtn">ℹ Règles</button>
+    </div>
+    <div class="floatPanel" id="rulesPanel" style="display:none;">
+      <div class="lbTitle">📜 Règles</div>
+      <div class="rules">
+        <div><b>Déplacement</b> — flèches / WASD, ou joystick tactile.</div>
+        <div><b>Esquive éclair (dash)</b> — espace ou bouton DASH. Brève invincibilité, recharge ~1,4s.</div>
+        <div><b>Frôler</b> un danger sans le toucher = <b>bonus + combo</b>. Plus vous jouez près du danger, plus le score s'envole.</div>
+        <div><b>3 cœurs</b>. De nouveaux périls apparaissent plus vous survivez.</div>
+        <div><b>Runes</b> — tous les 180 points, choisissez un bonus permanent parmi 3 propositions.</div>
+      </div>
+    </div>
+    <div class="floatPanel" id="lbPanel" style="display:none;">
       <div class="lbTitle">🏆 Classement</div>
       <div class="lbList" id="lbListStart">Chargement…</div>
     </div>
-  </div></div>
+  </div>
 </div>
 
 <div class="overlay" id="deathOverlay" style="display:none;">
@@ -220,6 +292,7 @@
 
 <div class="overlay" id="runeOverlay" style="display:none;">
   <div class="cardBox"><div class="cardScroll">
+    <div class="levelUpBanner">✦ NIVEAU SUPÉRIEUR ✦</div>
     <h1>Le Cercle vous offre un don</h1>
     <div class="titleRule"><span>✦</span></div>
     <div class="runeScoreTag" id="runeScoreTag"></div>
@@ -228,6 +301,80 @@
   </div></div>
 </div>
 
+<script>
+/* --- Fond d'ambiance (page d'accueil / autour du jeu), indépendant de la logique du jeu --- */
+(function(){
+  const bgCv = document.getElementById('bgCanvas');
+  const bgCtx = bgCv.getContext('2d');
+  let w, h, cx, cy;
+
+  function resize(){
+    w = bgCv.width = window.innerWidth;
+    h = bgCv.height = window.innerHeight;
+    cx = w/2; cy = h/2;
+  }
+  window.addEventListener('resize', resize);
+  resize();
+
+  const stars = Array.from({length:70}, () => ({
+    x:(Math.random()-0.5)*w, y:(Math.random()-0.5)*h, z:Math.random()*1000,
+    size:Math.random()*2+1, color: Math.random()>0.4 ? '#6C5CE7' : '#9C8CFF'
+  }));
+
+  let angle = 0;
+  function drawBg(){
+    bgCtx.fillStyle = '#0A0710';
+    bgCtx.fillRect(0,0,w,h);
+    angle += 0.0015;
+
+    bgCtx.save();
+    bgCtx.translate(cx,cy);
+
+    const aura = bgCtx.createRadialGradient(0,0,50,0,0,420);
+    aura.addColorStop(0,'rgba(108,92,231,.18)');
+    aura.addColorStop(0.6,'rgba(77,43,179,.05)');
+    aura.addColorStop(1,'rgba(10,7,16,0)');
+    bgCtx.fillStyle = aura;
+    bgCtx.fillRect(-w/2,-h/2,w,h);
+
+    // anneaux runiques inclinés (portail vu en perspective)
+    bgCtx.save();
+    bgCtx.scale(1, 0.42);
+    bgCtx.strokeStyle = 'rgba(156,140,255,.22)';
+    bgCtx.lineWidth = 2;
+    bgCtx.beginPath(); bgCtx.arc(0,0,340,0,Math.PI*2); bgCtx.stroke();
+    bgCtx.rotate(angle);
+    bgCtx.strokeStyle = 'rgba(108,92,231,.35)';
+    bgCtx.lineWidth = 2.5;
+    bgCtx.beginPath(); bgCtx.arc(0,0,270,0,Math.PI*2); bgCtx.stroke();
+    for (let i=0;i<8;i++){
+      const a = i/8*Math.PI*2;
+      bgCtx.beginPath();
+      bgCtx.moveTo(Math.cos(a)*120, Math.sin(a)*120);
+      bgCtx.lineTo(Math.cos(a)*270, Math.sin(a)*270);
+      bgCtx.stroke();
+    }
+    bgCtx.restore();
+
+    // poussière stellaire en parallaxe (profondeur 3D simulée)
+    stars.forEach(p=>{
+      p.z -= 1.1;
+      if (p.z <= 0) p.z = 1000;
+      const k = 400/p.z;
+      const px = p.x*k, py = p.y*k;
+      const a = 1 - p.z/1000;
+      bgCtx.fillStyle = p.color;
+      bgCtx.globalAlpha = a;
+      bgCtx.beginPath(); bgCtx.arc(px,py,p.size*k,0,Math.PI*2); bgCtx.fill();
+    });
+    bgCtx.globalAlpha = 1;
+
+    bgCtx.restore();
+    requestAnimationFrame(drawBg);
+  }
+  drawBg();
+})();
+</script>
 <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 <script>
 (function(){
@@ -309,6 +456,10 @@
   function soundGraze(){ beep(880,.06,'sine',.035); }
   function soundHit(){ beep(140,.28,'sawtooth',.09,55); }
   function soundRune(){ [660,880,990].forEach((f,i)=>setTimeout(()=>beep(f,.15,'sine',.05), i*70)); }
+  function soundLevelUp(){
+    beep(110,.35,'sine',.06);
+    [523,659,784,1047].forEach((f,i)=>setTimeout(()=>beep(f,.22,'triangle',.06), i*90));
+  }
   function soundGameOver(){ beep(320,.55,'sawtooth',.08,50); }
 
   // ---------- Particules & shake ----------
@@ -331,6 +482,13 @@
   ];
   function triggerRuneChoice(){
     paused = true;
+    soundLevelUp();
+    spawnParticles(player.x, player.y, '#FFD166', 34, 0.8, 70, 230);
+    addShake(0.18, 4);
+    const flash = document.createElement('div');
+    flash.className = 'flashBurst';
+    document.body.appendChild(flash);
+    setTimeout(()=> flash.remove(), 550);
     const pool = RUNES.slice();
     for (let i=pool.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [pool[i],pool[j]]=[pool[j],pool[i]]; }
     const picks = pool.slice(0,3);
@@ -428,11 +586,12 @@
 
   // ---------- Game state ----------
   let player, hazards, elapsed, score, hp, maxHp, comboCount, comboTimer, grazes, dashCd, wavesReached, lastDir;
-  elapsed = 0; score = 0; hp = 3; maxHp = 3; comboCount = 0; comboTimer = 0;
   let particles, shakeTime, shakeMag, paused, speedMult, dashCdMult, dashInvulnBonus, grazeBonus, scoreMult, nextRuneScore, runeStep;
   let currentRuneChoices = [];
   let runeCardEls = [];
   let selectedRuneIndex = 0;
+  elapsed = 0; score = 0; hp = 3; maxHp = 3; comboCount = 0; comboTimer = 0;
+  particles = []; shakeTime = 0; shakeMag = 0;
   function highlightRuneSelection(){
     runeCardEls.forEach((el,i)=> el.classList.toggle('selected', i===selectedRuneIndex));
   }
@@ -585,7 +744,6 @@
     if (dashCd > 0) dashCd -= dt;
     if (player.invuln > 0) player.invuln -= dt;
     if (shakeTime > 0){ shakeTime -= dt; if (shakeTime < 0) shakeTime = 0; }
-    updateDust(dt);
     for (let i=particles.length-1;i>=0;i--){
       const p = particles[i];
       p.x += p.vx*dt; p.y += p.vy*dt;
@@ -758,7 +916,7 @@
         ctx.beginPath(); ctx.moveTo(9,0); ctx.lineTo(-7,4); ctx.lineTo(-4,0); ctx.lineTo(-7,-4); ctx.closePath(); ctx.fill();
         ctx.restore();
       } else if (hz.type==='fireball'){
-        const flick = 1 + Math.sin(elapsed*22+hz.x)*0.13;
+        const flick = 1 + Math.sin(elapsed*2.4+hz.x*0.01)*0.05;
         const grad = ctx.createRadialGradient(hz.x,hz.y,1,hz.x,hz.y,hz.r*1.8*flick);
         grad.addColorStop(0,'#FFDFAE'); grad.addColorStop(0.5,'#FF8A4C'); grad.addColorStop(1,'rgba(255,138,76,0)');
         ctx.fillStyle = grad;
@@ -871,6 +1029,7 @@
     $('scoreVal').textContent = Math.floor(score).toLocaleString('fr-FR');
     $('timeVal').textContent = elapsed.toFixed(1)+'s';
     $('bestVal').textContent = Math.floor(best).toLocaleString('fr-FR');
+    const bvm = $('bestValMenu'); if (bvm) bvm.textContent = Math.floor(best).toLocaleString('fr-FR');
     const heartsEl = $('hearts');
     heartsEl.innerHTML = '';
     for (let i=0;i<maxHp;i++){
@@ -900,7 +1059,6 @@
 
   function endRun(){
     running = false;
-    cancelAnimationFrame(raf);
     const isRecord = score > best;
     if (isRecord){
       best = score;
@@ -920,20 +1078,22 @@
 
   let last = 0;
   function loop(ts){
-    if (!running) return;
     const dt = Math.min((ts-last)/1000, 0.033);
     last = ts;
-    if (!paused) update(dt);
+    updateDust(dt);
+    if (running && !paused) update(dt);
     ctx.save();
-    const shk = shakeTime > 0 ? shakeMag * Math.min(1, shakeTime*4) : 0;
+    const shk = (running && shakeTime > 0) ? shakeMag * Math.min(1, shakeTime*4) : 0;
     ctx.translate((Math.random()*2-1)*shk, (Math.random()*2-1)*shk);
     drawArena();
-    drawHazards();
-    drawParticles();
-    drawPlayer();
+    if (running){
+      drawHazards();
+      drawParticles();
+      drawPlayer();
+    }
     drawVignette();
     ctx.restore();
-    renderHUD();
+    if (running) renderHUD();
     raf = requestAnimationFrame(loop);
   }
 
@@ -944,18 +1104,29 @@
     $('startOverlay').style.display='none';
     $('deathOverlay').style.display='none';
     $('runeOverlay').style.display='none';
+    $('gameHeader').style.display='flex';
     last = performance.now();
-    raf = requestAnimationFrame(loop);
   }
 
   $('startBtn').addEventListener('click', startRun);
   $('againBtn').addEventListener('click', startRun);
+
+  function togglePanel(id, otherId){
+    const p = $(id), other = $(otherId);
+    const willShow = p.style.display === 'none';
+    p.style.display = willShow ? 'block' : 'none';
+    if (willShow) other.style.display = 'none';
+  }
+  $('lbToggleBtn').addEventListener('click', ()=> togglePanel('lbPanel','rulesPanel'));
+  $('rulesToggleBtn').addEventListener('click', ()=> togglePanel('rulesPanel','lbPanel'));
 
   const savedPseudo = localStorage.getItem('cercleEpreuvePseudo');
   if (savedPseudo) $('pseudoInput').value = savedPseudo;
   refreshLeaderboards();
 
   renderHUD();
+  last = performance.now();
+  raf = requestAnimationFrame(loop);
 })();
 </script>
 </body>
