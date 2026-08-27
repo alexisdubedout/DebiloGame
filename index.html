@@ -604,7 +604,7 @@
   // ---------- Game state ----------
   let player, hazards, elapsed, score, hp, maxHp, comboCount, comboTimer, grazes, dashCd, wavesReached, lastDir;
   let particles, shakeTime, shakeMag, paused, speedMult, dashCdMult, dashInvulnBonus, grazeBonus, scoreMult, nextRuneScore, runeStep;
-  let arenaR, hazardSpeedMult, telegraphMult, comboWindowBonus, postHitInvulnBonus, dashDistMult;
+  let arenaR = ARENA_R, hazardSpeedMult = 1, telegraphMult = 1, comboWindowBonus = 0, postHitInvulnBonus = 0, dashDistMult = 1;
   let runeLevels = {};
   function renderOwnedRunes(){
     const el = $('ownedRunes');
