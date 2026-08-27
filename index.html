@@ -50,6 +50,9 @@
 
   .hud{ position:absolute; inset:0; pointer-events:none; padding:14px; display:flex; flex-direction:column; justify-content:space-between; }
   .hudTop{ display:flex; justify-content:space-between; align-items:flex-start; }
+  .ownedRunes{ position:absolute; top:12px; left:50%; transform:translateX(-50%); display:flex; gap:6px; flex-wrap:wrap; max-width:70%; justify-content:center; pointer-events:none; }
+  .runeBadge{ position:relative; width:26px; height:26px; border-radius:50%; background:rgba(20,15,35,.65); border:1.5px solid var(--border); display:flex; align-items:center; justify-content:center; font-size:13px; backdrop-filter:blur(4px); }
+  .runeBadge .lvl{ position:absolute; bottom:-5px; right:-4px; background:var(--gold); color:#0A0710; font-family:var(--font-mono); font-size:8px; font-weight:800; border-radius:8px; padding:0 3.5px; line-height:1.4; }
   .scoreBig{ font-family:var(--font-mono); font-size: clamp(24px,6vw,36px); font-weight:700; color:var(--gold); text-shadow:0 0 14px rgba(255,209,102,.4); }
   .scoreLbl{ font-family:var(--font-mono); font-size:9.5px; letter-spacing:.14em; text-transform:uppercase; color:var(--text-dim); }
   .hearts{ display:flex; gap:4px; margin-top:4px; }
@@ -211,6 +214,7 @@
   <div class="stageWrap">
     <canvas id="cv" width="640" height="640"></canvas>
     <div class="hud">
+      <div class="ownedRunes" id="ownedRunes"></div>
       <div class="hudTop">
         <div>
           <div class="scoreLbl">Score</div>
@@ -409,9 +413,13 @@
   }
   async function fetchLeaderboard(){
     if (!sb) return null;
-    const { data, error } = await sb.from('leaderboard').select('name,score').order('score', { ascending:false }).limit(10);
+    const { data, error } = await sb.from('leaderboard').select('name,score,time_survived').order('score', { ascending:false }).limit(10);
     if (error){ console.error(error); return null; }
     return data;
+  }
+  function fmtTime(t){
+    if (t === null || t === undefined) return '—';
+    return Math.floor(t) + 's';
   }
   function renderLeaderboard(el, rows, highlightScore){
     if (!el) return;
@@ -420,7 +428,7 @@
     if (!rows.length){ el.innerHTML = '<div style="opacity:.6">Aucun score pour l\u2019instant. Soyez le premier !</div>'; return; }
     el.innerHTML = rows.map((r,i)=>{
       const rank = i===0?'🥇':i===1?'🥈':i===2?'🥉':`#${i+1}`;
-      return `<div class="lbRow${r.score===highlightScore?' me':''}"><span>${rank} ${escapeHtml(r.name)}</span><span>${Math.floor(r.score).toLocaleString('fr-FR')}</span></div>`;
+      return `<div class="lbRow${r.score===highlightScore?' me':''}"><span>${rank} ${escapeHtml(r.name)}</span><span>${Math.floor(r.score).toLocaleString('fr-FR')} pts · ${fmtTime(r.time_survived)}</span></div>`;
     }).join('');
   }
   async function refreshLeaderboards(highlightScore){
@@ -428,11 +436,12 @@
     renderLeaderboard($('lbListStart'), rows, highlightScore);
     renderLeaderboard($('lbListDeath'), rows, highlightScore);
   }
-  async function submitScore(name, score){
+  async function submitScore(name, score, timeSurvived){
     if (!sb || score <= 0) return;
-    try{ await sb.from('leaderboard').insert({ name, score }); }
+    try{ await sb.from('leaderboard').insert({ name, score, time_survived: Math.floor(timeSurvived) }); }
     catch(e){ console.error(e); }
   }
+
 
   // ---------- Audio (Web Audio, synthétisé, pas de fichiers) ----------
   let audioCtx = null;
@@ -511,6 +520,8 @@
       div.innerHTML = `<div class="keyBadge">${i+1}</div><div class="icon">${r.icon}</div><div class="name">${r.name}</div><div class="desc">${r.desc}</div>`;
       const pick = ()=>{
         r.apply();
+        runeLevels[r.id] = (runeLevels[r.id]||0) + 1;
+        renderOwnedRunes();
         soundRune();
         $('runeOverlay').style.display = 'none';
         paused = false;
@@ -594,6 +605,17 @@
   let player, hazards, elapsed, score, hp, maxHp, comboCount, comboTimer, grazes, dashCd, wavesReached, lastDir;
   let particles, shakeTime, shakeMag, paused, speedMult, dashCdMult, dashInvulnBonus, grazeBonus, scoreMult, nextRuneScore, runeStep;
   let arenaR, hazardSpeedMult, telegraphMult, comboWindowBonus, postHitInvulnBonus, dashDistMult;
+  let runeLevels = {};
+  function renderOwnedRunes(){
+    const el = $('ownedRunes');
+    if (!el) return;
+    const ids = Object.keys(runeLevels);
+    el.innerHTML = ids.map(id=>{
+      const r = RUNES.find(x=>x.id===id);
+      if (!r) return '';
+      return `<div class="runeBadge" style="border-color:${r.color}"><span>${r.icon}</span><span class="lvl">${runeLevels[id]}</span></div>`;
+    }).join('');
+  }
   let currentRuneChoices = [];
   let runeCardEls = [];
   let selectedRuneIndex = 0;
@@ -620,6 +642,8 @@
     shakeTime = 0; shakeMag = 0; paused = false;
     speedMult = 1; dashCdMult = 1; dashInvulnBonus = 0; grazeBonus = 0; scoreMult = 1;
     arenaR = ARENA_R; hazardSpeedMult = 1; telegraphMult = 1; comboWindowBonus = 0; postHitInvulnBonus = 0; dashDistMult = 1;
+    runeLevels = {};
+    renderOwnedRunes();
     nextRuneScore = 180;
     runeStep = 180;
     spawners.arrow.next = 0.6;
@@ -1081,7 +1105,7 @@
       <div>Périls affrontés — <span>${wavesReached+1}/7</span></div>`;
     $('deathOverlay').style.display = 'flex';
     const finalScoreInt = Math.floor(score);
-    submitScore(getPseudo(), finalScoreInt).then(()=> refreshLeaderboards(finalScoreInt));
+    submitScore(getPseudo(), finalScoreInt, elapsed).then(()=> refreshLeaderboards(finalScoreInt));
   }
 
   let last = 0;
